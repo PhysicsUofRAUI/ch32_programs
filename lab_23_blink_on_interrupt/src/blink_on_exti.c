@@ -12,7 +12,7 @@ int main()
     // Inititialize the port A gpios
 	RCC->APB2PCENR |= RCC_APB2Periph_AFIO | RCC_APB2Periph_GPIOA;
 
-    RCC->APB2PCENR |= RCC_AFIOEN; // tried adding from the standby_btn
+    RCC->APB2PCENR |= RCC_AFIOEN;
 
     // configure PA 10 for push-pull
 	GPIOA->CFGHR &= ~(0xf << (4 * (10 - 8))); // Clear configuration bits for PA10
@@ -28,17 +28,18 @@ int main()
 
     // Seting the Registers for 
     // interrupt
-    AFIO->EXTICR[0] = AFIO_EXTICR1_EXTI0_PA;
+    AFIO->EXTICR[0] |= AFIO_EXTICR1_EXTI1_PA;
 
     //I think something with AFIO ECR register is needed
     // Interrupt setup for EXTI1
     EXTI->INTENR = EXTI_INTENR_MR1; // Enable EXTI1 interrupt
     EXTI->RTENR = EXTI_RTENR_TR1;   // disable Rising edge trigger
-    EXTI->FTENR = EXTI_FTENR_TR1; // Falling edge
+    EXTI->FTENR = 0; // Falling edge
 
     // enable toggle interuppt
 	NVIC_EnableIRQ( EXTI1_IRQn ); // it is defined as 23
-    __enable_irq();
+
+    EXTI->INTFR = EXTI_Line1;
 
 	while(1)
 	{
