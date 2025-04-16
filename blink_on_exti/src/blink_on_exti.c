@@ -48,7 +48,6 @@ int main()
 }
 
 void EXTI1_IRQHandler( void ) {
-    GPIOA->BSHR = (1<<(16+10)); // Set GPIOA pin 10 low
     if (EXTI->INTFR & EXTI_Line1) { // Check if update interrupt occurred
         if (state == 0)
         {
